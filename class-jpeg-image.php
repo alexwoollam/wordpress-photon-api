@@ -1,13 +1,15 @@
 <?php
 
-if ( ! class_exists( 'Jpeg_Image' ) ) {
+if ( ! class_exists( 'Jpeg_Image' ) )
+{
 
-class Jpeg_Image {
+class Jpeg_Image 
+{
 
 	private $_JPG_MAX_QUALITY;
 
 	// The names of the JPEG segment markers, indexed by their marker number
-	private $JPEG_Segment_Names = array(
+	private array $_JPEG_Segment_Names = [
 		0xC0 =>  "SOF0",  0xC1 =>  "SOF1",  0xC2 =>  "SOF2",  0xC3 =>  "SOF3",
 		0xC5 =>  "SOF5",  0xC6 =>  "SOF6",  0xC7 =>  "SOF7",  0xC8 =>  "JPG",
 		0xC9 =>  "SOF9",  0xCA =>  "SOF10", 0xCB =>  "SOF11", 0xCD =>  "SOF13",
@@ -26,14 +28,16 @@ class Jpeg_Image {
 		0xF8 =>  "JPG8",  0xF9 =>  "JPG9",  0xFA =>  "JPG10", 0xFB =>  "JPG11",
 		0xFC =>  "JPG12", 0xFD =>  "JPG13",
 		0xFE =>  "COM",   0x01 =>  "TEM",   0x02 =>  "RES",
-	);
+	];
 
-	function __construct() {
+	function __construct()
+	{
 		// This constant should be defined externally to override the default of 100
 		$this->_JPG_MAX_QUALITY = defined( 'JPG_MAX_QUALITY' ) ? JPG_MAX_QUALITY : 100;
 	}
 
-	private function get_jpeg_header_data( &$buff, $want=null ) {
+	private function get_jpeg_header_data( &$buff, $want=null )
+	{
 		$data = $this->buffer_read( $buff, 2, true ); // Read the first two characters
 		// Check that the first two characters are 0xFF 0xDA  (SOI - Start of image)
 		if ( $data != "\xFF\xD8" ) {
@@ -42,7 +46,7 @@ class Jpeg_Image {
 		}
 		$data = $this->buffer_read( $buff, 2 ); // Read the third character
 		// Check that the third character is 0xFF (Start of first segment header)
-		if ( $data{0} != "\xFF" ) {
+		if ( $data[0] != "\xFF" ) {
 			// NO FF found - close file and return - JPEG is probably corrupted
 			return false;
 		}
@@ -50,11 +54,11 @@ class Jpeg_Image {
 		//   1) an EOI (End of image) marker is hit,
 		//   2) we have hit the compressed image data (no more headers are allowed after data)
 		//   3) or end of file is hit
-		$headerdata = array();
-		while ( ( $data{1} != "\xD9" ) && ( $data != '' ) ) {
+		$headerdata = [];
+		while ( ( $data[1] != "\xD9" ) && ( $data != '' ) ) {
 			// Found a segment to look at.
 			// Check that the segment marker is not a Restart marker - restart markers don't have size or data after them
-			if (  ( ord($data{1}) < 0xD0 ) || ( ord($data{1}) > 0xD7 ) ) {
+			if (  ( ord($data[1] ) < 0xD0 ) || ( ord($data[1] ) > 0xD7 ) ) {
 				// Segment isn't a Restart marker
 				$sizestr = $this->buffer_read( $buff, 2 ); // Read the next two bytes (size)
 				if ( null === $sizestr )
@@ -63,22 +67,22 @@ class Jpeg_Image {
 				// Read the segment data with length indicated by the previously read size
 				$segdata = $this->buffer_read( $buff, $decodedsize['size'] - 2 );
 				// Store the segment information in the output array
-				if ( !$want || $want == ord($data{1}) ) {
-					$headerdata[] = (object)array(
-						"SegType" => ord($data{1}),
-						"SegName" => $this->JPEG_Segment_Names[ ord($data{1}) ],
+				if ( !$want || $want == ord( $data[1] ) ) {
+					$headerdata[] = (object)[
+						"SegType" => ord( $data[1] ),
+						"SegName" => $this->_JPEG_Segment_Names[ ord( $data[1] ) ],
 						"SegData" => $segdata
-					);
+					];
 				}
 			}
 			// If this is a SOS (Start Of Scan) segment, then there is no more header data - the compressed image data follows
-			if ( $data{1} == "\xDA" ) {
+			if ( $data[1] == "\xDA" ) {
 				break;
 			} else {
 				// Not an SOS - Read the next two bytes - should be the segment marker for the next segment
 				$data = $this->buffer_read( $buff, 2 );
 				// Check that the first byte of the two is 0xFF as it should be for a marker
-				if ( $data{0} != "\xFF" ) {
+				if ( $data[0] != "\xFF" ) {
 					// NO FF found - close file and return - JPEG is probably corrupted
 					return false;
 				}
@@ -87,7 +91,8 @@ class Jpeg_Image {
 		return $headerdata;
 	}
 
-	private function buffer_read( &$buff, $len, $new = false ) {
+	private function buffer_read( &$buff, $len, $new = false ) 
+	{
 		static $pointer = 0;
 		static $total_len = 0;
 		if ( $new ) {
@@ -104,7 +109,8 @@ class Jpeg_Image {
 		return $data;
 	}
 
-	private function get_value_by_endianness( $data, $little_endian = true ) {
+	private function get_value_by_endianness( $data, $little_endian = true ) 
+	{
 		$ret_val = 0;
 		if ( $little_endian ) {
 			for ( $i = ( strlen( $data ) - 1 ); $i >= 0; $i-- ) {
@@ -122,10 +128,11 @@ class Jpeg_Image {
 		return $ret_val;
 	}
 
-	public function get_jpeg_details( &$image_data, $return_value = 'all' ) {
-		$tables = array(
-			'multi' => array(
-				'hash' => array(
+	public function get_jpeg_details( &$image_data, $return_value = 'all' ) 
+	{
+		$tables = [
+			'multi' => [
+				'hash' => [
 					 1020, 1015,  932,  848,  780,  735,  702,  679,  660,  645,
 					  632,  623,  613,  607,  600,  594,  589,  585,  581,  571,
 					  555,  542,  529,  514,  494,  474,  457,  439,  424,  410,
@@ -137,8 +144,8 @@ class Jpeg_Image {
 					   94,   90,   84,   79,   74,   70,   64,   59,   55,   49,
 					   45,   40,   34,   30,   25,   20,   15,   11,    6,    4,
 						0
-				), // hash
-				'sums' => array (
+				], // hash
+				'sums' => [
 					 32640, 32635, 32266, 31495, 30665, 29804, 29146, 28599, 28104,
 					 27670, 27225, 26725, 26210, 25716, 25240, 24789, 24373, 23946,
 					 23572, 22846, 21801, 20842, 19949, 19121, 18386, 17651, 16998,
@@ -151,10 +158,10 @@ class Jpeg_Image {
 					  3326,  3139,  2957,  2775,  2586,  2405,  2216,  2037,  1846,
 					  1666,  1483,  1297,  1109,   927,   735,   554,   375,   201,
 					   128,     0
-				 ), // sums
-			), // multi
-			'single' => array(
-				'hash' => array(
+				], // sums
+			], // multi
+			'single' => [
+				'hash' => [
 				   510,  505,  422,  380,  355,  338,  326,  318,  311,  305,
 				   300,  297,  293,  291,  288,  286,  284,  283,  281,  280,
 				   279,  278,  277,  273,  262,  251,  243,  233,  225,  218,
@@ -166,8 +173,8 @@ class Jpeg_Image {
 					50,   48,   44,   42,   39,   37,   34,   31,   29,   26,
 					24,   21,   18,   16,   13,   11,    8,    6,    3,    2,
 					 0
-				), // hash
-				'sums' => array(
+				], // hash
+				'sums' => [
 				   16320, 16315, 15946, 15277, 14655, 14073, 13623, 13230, 12859,
 				   12560, 12240, 11861, 11456, 11081, 10714, 10360, 10027,  9679,
 					9368,  9056,  8680,  8331,  7995,  7668,  7376,  7084,  6823,
@@ -180,9 +187,9 @@ class Jpeg_Image {
 					1326,  1251,  1179,  1109,  1031,   961,   884,   814,   736,
 					 667,   592,   518,   441,   369,   292,   221,   151,    86,
 					  64,     0
-				), // sums
-			), // single
-		); // tables
+				], // sums
+			], // single
+		]; // tables
 		
 		$headers = $this->get_jpeg_header_data( $image_data );
 		if ( ! $headers ) {
@@ -210,7 +217,7 @@ class Jpeg_Image {
 
 			if ( ( -1 == $quality ) && ( 'DQT' == $header->SegName ) ) {
 				if ( strlen( $header->SegData ) > 128 ) {
-					$entry = array( 0 => array(), 1 => array() );
+					$entry = [ 0 => array(), 1 => array() ];
 					foreach ( str_split( substr( $header->SegData, 1, 64) ) as $chr )
 						$entry[0][] = ord($chr);
 					foreach ( str_split( substr( $header->SegData, -64) ) as $chr )
@@ -219,7 +226,7 @@ class Jpeg_Image {
 					$qvalue = $entry[0][2] + $entry[0][53] + $entry[1][0] + $entry[1][63];
 					$table = "multi";
 				} else if ( strlen( $header->SegData ) > 64 ) {
-					$entry = array( 0 => array() );
+					$entry = [ 0 => array() ];
 					foreach ( str_split( substr( $header->SegData, 1, 64) ) as $chr )
 						$entry[0][] = ord($chr);
 					$sum = array_sum( $entry[0] );
@@ -243,13 +250,11 @@ class Jpeg_Image {
 		if ( 'quality' == $return_value )
 			return ( -1 == $quality ) ? $this->_JPG_MAX_QUALITY : $quality;
 		else
-			return array(
+			return [
 					'x'=> $width,
 					'y'=> $height,
 					'q'=> ( -1 == $quality ) ? $this->_JPG_MAX_QUALITY : $quality,
-				);
+			];
+		}
 	}
-
-} // class Jpeg_Image
-
-} // class_exists
+}

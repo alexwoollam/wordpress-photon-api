@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ruleset name="proagrica-base">
+	<description>WordPress rules for use with Proagrica base them - NON-VIP!</description>
+
+	<!-- Use HM Coding Standards -->
+	<rule ref="vendor/humanmade/coding-standards" />
+
+	<!-- Add PHPDoc rules -->
+	<rule ref="WordPress-Docs" />
+
+	<!-- Lets exclude some of these as they are problematic to the way we are working -->
+	<exclude name="WordPress.VIP.RestrictedFunctions" />
+	<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+	<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+
+	<!-- Ignored directories -->
+	<exclude-pattern>/^.*/g</exclude-pattern>
+	<exclude-pattern>content/themes/twenty*/*</exclude-pattern>
+	<exclude-pattern>proagrica-platform/*</exclude-pattern>
+	<exclude-pattern>vendor/*</exclude-pattern>
+	<exclude-pattern>wordpress/*</exclude-pattern>
+	<exclude-pattern>wp-config*</exclude-pattern>
+
+	<!-- Ignore specific index files -->
+	<exclude-pattern>content/themes/index.php</exclude-pattern>
+	<exclude-pattern>content/plugins/index.php</exclude-pattern>
+	<exclude-pattern>/index.php</exclude-pattern>
+
+	<!-- Ignore inc directory rule with test files -->
+	<rule ref="HM.Files.NamespaceDirectoryName.NoIncDirectory">
+		<exclude-pattern>tests/*</exclude-pattern>
+		<exclude-pattern>content/*</exclude-pattern>
+	</rule>
+	
+	<rule ref="HM.Files.ClassFileName">
+		<exclude-pattern>tests/*</exclude-pattern>
+		<exclude-pattern>content/*</exclude-pattern>
+	</rule>
+</ruleset>

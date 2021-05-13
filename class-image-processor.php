@@ -41,10 +41,10 @@ class Image_Processor {
 	private $original_exif = null;
 	private $hardcoded_rotation = null;
 
-	public static $allowed_functions = array( 'w', 'h', 'crop',
+	public static $allowed_functions = [ 'w', 'h', 'crop',
 			'crop_offset', 'resize', 'fit', 'lb', 'ulb', 'filter',
 			'brightness', 'contrast', 'colorize', 'smooth',
-		);
+		];
 
 	private $jpeg_details = null;
 	private $upscale = null;
@@ -59,7 +59,7 @@ class Image_Processor {
 	private $image_max_age = null;
 	private $bytes_saved = 0;
 	private $icc_profile_removed_size = 0;
-	private $processed = array();
+	private $processed = [];
 
 	function __construct() {
 		// These constants should be defined externally to override the defaults
@@ -331,8 +331,10 @@ class Image_Processor {
 	}
 
 	private function is_rotation_being_stripped( $strip ) {
-		return in_array( $strip, array( 'all', 'info' ) );
+		return in_array( $strip, [ 'all', 'info' ] );
 	}
+
+	
 
 	private function maybe_hardcode_exif_rotation( $strip ) {
 		if ( isset( $this->hardcoded_rotation ) || ! $this->is_rotation_being_stripped( $strip ) ) {
@@ -646,7 +648,7 @@ class Image_Processor {
 				$this->image->readimageblob( $this->image_data );
 
 				$this->image_format = strtolower( $this->image->getimageformat() );
-				if ( in_array( $this->image_format, array( 'jpg', 'jpeg' ) ) ) {
+				if ( in_array( $this->image_format, [ 'jpg', 'jpeg' ] ) ) {
 					$this->mime_type = 'image/jpeg';
 					if ( ! isset( $this->jpeg_details ) )
 						$this->load_jpeg_info();
@@ -664,12 +666,12 @@ class Image_Processor {
 				$this->image_height = $this->image->getimageheight();
 				$this->image_type = $this->image->getimagetype();
 
-				$this->image_has_transparency = in_array( $this->image_type, array(
+				$this->image_has_transparency = in_array( $this->image_type, [
 					Gmagick::IMGTYPE_GRAYSCALEMATTE,
 					Gmagick::IMGTYPE_TRUECOLORMATTE,
 					Gmagick::IMGTYPE_PALETTEMATTE,
 					Gmagick::IMGTYPE_COLORSEPARATIONMATTE,
-				) );
+				]);
 			} catch ( GmagickException $e ) {
 				return false;
 			}
@@ -678,7 +680,7 @@ class Image_Processor {
 	}
 
 	public function get_transformation_args() {
-		$retA = array();
+		$retA = [];
 		foreach( $_GET as $arg => $val ) {
 			if ( ! is_numeric( $arg ) && in_array( $arg, self::$allowed_functions, true ) ) {
 				$retA[ $arg ] = $val;
