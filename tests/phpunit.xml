@@ -1,0 +1,7 @@
+<phpunit stopOnFailure="false" backupGlobals="false" colors="true">
+	<testsuites>
+		<testsuite name="wpcom-images">
+			<directory suffix="-tests.php">.</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
