@@ -76,24 +76,24 @@ require_once ( dirname( __FILE__ ) . '/class-image-effect.php' );
 		private $crop_height = 0;
 		private $crop = false;
 		private $fit = false;
-		private $resize_ratio = array( 0, 0 );
+		private $resize_ratio = [ 0, 0 ];
 		private $frame_count = 0;
 		private $au = 0;
 		private $nt = 0;
 
-		private $frame_array = array();
+		private $frame_array = [];
 		private $image_data = null;
-		private $gn_fld  = array();
-		private $dl_frmf = array();
-		private $dl_frms = array();
-		private $pre_process_actions = array();
-		private $post_process_actions = array();
-		private $processed = array();
+		private $gn_fld  = [];
+		private $dl_frmf = [];
+		private $dl_frms = [];
+		private $pre_process_actions = [];
+		private $post_process_actions = [];
+		private $processed = [];
 		private $upscale_max_pixels = 1000;
 		private $zoom_enabled = true;
 		private $send_etag_header = true;
 
-		private static $pre_actions = array( 'set_height', 'set_width', 'crop', 'crop_offset', 'resize_and_crop', 'fit_in_box' );
+		private static $pre_actions = [ 'set_height', 'set_width', 'crop', 'crop_offset', 'resize_and_crop', 'fit_in_box' ];
 
 		const optimize = true;
 
@@ -164,7 +164,7 @@ require_once ( dirname( __FILE__ ) . '/class-image-effect.php' );
 			if ( ! preg_match( '/^([0-9]+)([MG])$/', ini_get( 'memory_limit' ), $matches ) ) {
 				return false;
 			}
-			$multiplier = array( 'M' => 2**20, 'G' => 2**30 );
+			$multiplier = [ 'M' => 2**20, 'G' => 2**30 ];
 			return ( (int) $matches[1] ) * $multiplier[ $matches[2] ];
 		}
 
@@ -269,7 +269,7 @@ require_once ( dirname( __FILE__ ) . '/class-image-effect.php' );
 				}
 
 				$lc_mod = $buffer;
-				$dimms = array();
+				$dimms = [];
 				$dimms[] = $this->get_num(1, 2);
 				$dimms[] = $this->get_num(3, 2);
 				$dimms[] = $this->get_num(5, 2);
@@ -833,10 +833,10 @@ require_once ( dirname( __FILE__ ) . '/class-image-effect.php' );
 
 			// we need at least one action to perform otherwise we should just send the original
 			if ( 0 == count( $this->pre_process_actions ) ) {
-				$this->pre_process_actions[] = array(
+				$this->pre_process_actions[] = [
 						'func_name' => 'set_width',
 						'params'    => $this->int_w,
-					);
+				];
 			}
 
 			$cropped = false;
@@ -907,15 +907,15 @@ require_once ( dirname( __FILE__ ) . '/class-image-effect.php' );
 
 		public function add_function( $function_name, $arguments ) {
 			if ( in_array( $function_name, self::$pre_actions ) ) {
-				$this->pre_process_actions[] = array(
+				$this->pre_process_actions[] = [
 						'func_name' => $function_name,
 						'params'    => $arguments,
-					);
+				];
 			} else {
-				$this->post_process_actions[] = array(
+				$this->post_process_actions[] = [
 						'func_name' => $function_name,
 						'params'    => $arguments,
-					);
+				];
 			}
 		}
 

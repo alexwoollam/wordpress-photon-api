@@ -9,7 +9,7 @@ class Jpeg_Image
 	private $_JPG_MAX_QUALITY;
 
 	// The names of the JPEG segment markers, indexed by their marker number
-	private array $_JPEG_Segment_Names = [
+	private $_JPEG_Segment_Names = [
 		0xC0 =>  "SOF0",  0xC1 =>  "SOF1",  0xC2 =>  "SOF2",  0xC3 =>  "SOF3",
 		0xC5 =>  "SOF5",  0xC6 =>  "SOF6",  0xC7 =>  "SOF7",  0xC8 =>  "JPG",
 		0xC9 =>  "SOF9",  0xCA =>  "SOF10", 0xCB =>  "SOF11", 0xCD =>  "SOF13",

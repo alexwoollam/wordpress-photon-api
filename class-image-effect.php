@@ -9,7 +9,7 @@ class Image_Effect {
 
 	private $_MAX_FILTER_FUNCTIONS;
 
-	public $processed = array();
+	public $processed = [];
 
 	public function __construct( $image_object_type, $mime_type ) {
 		$this->image_object_type = $image_object_type;

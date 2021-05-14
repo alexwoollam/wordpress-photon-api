@@ -1,12 +1,14 @@
 <?php
 
-if ( ! class_exists( 'Image_Processor' ) ) {
+if ( ! class_exists( 'Image_Processor' ) ) 
+{
 
 require_once ( dirname( __FILE__ ) . '/class-gif-image.php' );
 require_once ( dirname( __FILE__ ) . '/class-jpeg-image.php' );
 require_once ( dirname( __FILE__ ) . '/class-image-effect.php' );
 
-class Image_Processor {
+class Image_Processor 
+{
 
 	private $_JPG_MAX_QUALITY;
 	private $_PNG_MAX_QUALITY;

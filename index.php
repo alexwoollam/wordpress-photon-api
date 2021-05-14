@@ -9,33 +9,33 @@ else if ( file_exists( dirname( __FILE__ ) . '/config.php' ) )
 	require dirname( __FILE__ ) . '/config.php';
 
 // Explicit Configuration
-$allowed_functions = apply_filters( 'allowed_functions', array(
+$allowed_functions = apply_filters( 'allowed_functions', [
 //	'q'           => RESERVED
 //	'zoom'        => global resolution multiplier (argument filter)
 //	'quality'     => sets the quality of JPEG images during processing
 //	'strip        => strips JPEG images of exif, icc or all "extra" data (params: info,color,all)
-	'h'           => 'set_height',      // done
-	'w'           => 'set_width',       // done
-	'crop'        => 'crop',            // done
-	'resize'      => 'resize_and_crop', // done
-	'fit'         => 'fit_in_box',      // done
-	'lb'          => 'letterbox',       // done
-	'ulb'         => 'unletterbox',     // compat
-	'filter'      => 'filter',          // compat
-	'brightness'  => 'brightness',      // compat
-	'contrast'    => 'contrast',        // compat
-	'colorize'    => 'colorize',        // compat
-	'smooth'      => 'smooth',          // compat
-) );
+	'h'           => 'set_height',      
+	'w'           => 'set_width',       
+	'crop'        => 'crop',            
+	'resize'      => 'resize_and_crop', 
+	'fit'         => 'fit_in_box',      
+	'lb'          => 'letterbox',       
+	'ulb'         => 'unletterbox',     
+	'filter'      => 'filter',          
+	'brightness'  => 'brightness',      
+	'contrast'    => 'contrast',        
+	'colorize'    => 'colorize',        
+	'smooth'      => 'smooth',          
+ ] );
 
-$photon_opencv_implemented_functions = array(
+$photon_opencv_implemented_functions = [
 	'h'          => true,
 	'w'          => true,
 	'crop'       => true,
 	'resize'     => true,
 	'fit'        => true,
 	'strip'      => true,
-);
+];
 
 unset( $allowed_functions['q'] );
 
@@ -47,16 +47,16 @@ if ( empty( $used_unimplemented_functions ) ) {
 	}
 }
 
-$allowed_types = apply_filters( 'allowed_types', array(
+$allowed_types = apply_filters( 'allowed_types', [
 	'gif',
 	'jpg',
 	'jpeg',
 	'png',
-) );
+ ] );
 
-$disallowed_file_headers = apply_filters( 'disallowed_file_headers', array(
+$disallowed_file_headers = apply_filters( 'disallowed_file_headers', [
 	'8BPS',
-) );
+ ] );
 
 $remote_image_max_size = apply_filters( 'remote_image_max_size', 55 * 1024 * 1024 );
 
@@ -65,7 +65,7 @@ $remote_image_max_size = apply_filters( 'remote_image_max_size', 55 * 1024 * 102
  * Values are bitmasks with the following options:
  * PHOTON__ALLOW_QUERY_STRINGS: Append the string found in the 'q' query string parameter as the query string of the remote URL
  */
-$origin_domain_exceptions = apply_filters( 'origin_domain_exceptions', array() );
+$origin_domain_exceptions = apply_filters( 'origin_domain_exceptions', [] );
 
 // If unprocessed origin images should cached by a Photon-enabled CDN, then the CDN's base URL should be returned by the filter
 $origin_image_cdn_url = apply_filters( 'origin_image_cdn_url', false );
@@ -144,7 +144,7 @@ function fetch_raw_data( $url, $timeout = 10, $connect_timeout = 3, $max_redirs 
 	}
 
 	$parsed = parse_url( apply_filters( 'url', $url ) );
-	$required = array( 'scheme', 'host', 'path' );
+	$required = [ 'scheme', 'host', 'path' ];
 
 	if ( ! $parsed || count( array_intersect_key( array_flip( $required ), $parsed ) ) !== count( $required ) ) {
 		do_action( 'bump_stats', 'invalid_url' );
@@ -176,7 +176,7 @@ function fetch_raw_data( $url, $timeout = 10, $connect_timeout = 3, $max_redirs 
 		return false;
 	}
 
-	$allowed_ip_types = array( 'flags' => FILTER_FLAG_IPV4, );
+	$allowed_ip_types = [ 'flags' => FILTER_FLAG_IPV4, ];
 	if ( apply_filters( 'allow_ipv6', false ) ) {
 		$allowed_ip_types['flags'] |= FILTER_FLAG_IPV6;
 	}
@@ -198,7 +198,7 @@ function fetch_raw_data( $url, $timeout = 10, $connect_timeout = 3, $max_redirs 
 
 	$ch = curl_init( $url );
 
-	curl_setopt_array( $ch, array(
+	curl_setopt_array( $ch, [
 		CURLOPT_USERAGENT            => apply_filters( 'photon_user_agent', 'Photon/1.0', $fetch_from_origin_cdn ),
 		CURLOPT_TIMEOUT              => $timeout,
 		CURLOPT_CONNECTTIMEOUT       => $connect_timeout,
@@ -207,7 +207,7 @@ function fetch_raw_data( $url, $timeout = 10, $connect_timeout = 3, $max_redirs 
 		CURLOPT_SSL_VERIFYHOST       => apply_filters( 'ssl_verify_host', false ),
 		CURLOPT_FOLLOWLOCATION       => false,
 		CURLOPT_DNS_USE_GLOBAL_CACHE => false,
-		CURLOPT_RESOLVE              => array( $parsed['host'] . ':' . $port . ':' . $ip ),
+		CURLOPT_RESOLVE              => [ $parsed['host'] . ':' . $port . ':' . $ip ],
 		CURLOPT_HEADERFUNCTION       => function( $ch, $header ) {
 			if ( preg_match( '/^Content-Length:\s*(\d+)$/i', rtrim( $header ), $matches ) ) {
 				if ( $matches[1] > $GLOBALS['remote_image_max_size'] ) {
@@ -228,7 +228,7 @@ function fetch_raw_data( $url, $timeout = 10, $connect_timeout = 3, $max_redirs 
 
 			return $bytes;
 		},
-	) );
+	 ] );
 
 	if ( ! curl_exec( $ch ) ) {
 		do_action( 'bump_stats', 'invalid_request' );
