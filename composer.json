@@ -12,5 +12,8 @@
             "name": "Alex Woollam",
             "email": "alexjhwoollam@gmail.com"
         }
-    ]
+    ],
+    "scripts": {
+            "test": "docker build -f Dockerfile.test ."
+    }
 }

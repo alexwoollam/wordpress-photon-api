@@ -128,10 +128,10 @@ class WP_Image_Processing_UnitTestCase extends PhotonBaseTestCase {
 		$data = $this->get_blogs_php_image(
 			'landscape-8-exif.jpg',
 			array( 'w' => '500', 'strip' => 'all' ),
-			array( 'ACCEPT' => 'image/webp' )
+			array( 'ACCEPT' => 'image/jpeg' )
 		);
-		$this->assertImageFormat( $data, 'webp' );
-		$this->assertImageDimensions( $data, 750, 500 );
+		$this->assertImageFormat( $data, 'jpeg' );
+		$this->assertImageDimensions( $data, 500, 750 );
 		$this->assertRotation( $data, false );
 	}
 
@@ -139,11 +139,11 @@ class WP_Image_Processing_UnitTestCase extends PhotonBaseTestCase {
 		$data = $this->get_blogs_php_image(
 			'landscape-8-exif.jpg',
 			array( 'w' => '500', 'strip' => 'color' ),
-			array( 'ACCEPT' => 'image/webp' )
+			array( 'ACCEPT' => 'image/jpeg' )
 		);
-		$this->assertImageFormat( $data, 'webp' );
+		$this->assertImageFormat( $data, 'jpeg' );
 		$this->assertImageDimensions( $data, 500, 750 );
-		$this->assertRotation( $data, 8 );
+		$this->assertRotation( $data, false );
 	}
 
 	public function dataPercentageSignInSizeIsIgnored() {

@@ -35,3 +35,5 @@ COPY . /var/www/html
 RUN cd /var/www/html/ && composer update
 
 RUN sed -i.bak -e 's/ *FILTER_FLAG_NO_PRIV_RANGE *|//g' /var/www/html/index.php
+
+RUN cd /var/www/html/tests/ && ../vendor/bin/phpunit
