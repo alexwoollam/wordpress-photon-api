@@ -32,6 +32,6 @@ RUN a2enconf photon
 
 COPY . /var/www/html
 
-RUN cd /var/www/html/ && composer update
+RUN cd /var/www/html/ && composer update --no-dev
 
 RUN sed -i.bak -e 's/ *FILTER_FLAG_NO_PRIV_RANGE *|//g' /var/www/html/index.php
